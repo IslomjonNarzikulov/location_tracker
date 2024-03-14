@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -43,6 +44,9 @@ class _GetLocationState extends State<GetLocation> {
               child: Text('Loading'),
             )
           : GoogleMap(
+              myLocationEnabled: true,
+              compassEnabled: true,
+              zoomControlsEnabled: true,
               onMapCreated: ((GoogleMapController controller) =>
                   _mapController.complete(controller)),
               initialCameraPosition:
@@ -55,17 +59,17 @@ class _GetLocationState extends State<GetLocation> {
                     markerId: const MarkerId('current location'),
                     icon: BitmapDescriptor.defaultMarker,
                     position: currentP!),
-                 Marker(
+                Marker(
                     onTap: () {
                       _showLocationEditDialog();
                     },
                     markerId: MarkerId('source location'),
                     icon: BitmapDescriptor.defaultMarker,
                     position: flex),
-                 Marker(
-                     onTap: () {
-                       _showLocationEditDialog();
-                     },
+                Marker(
+                    onTap: () {
+                      _showLocationEditDialog();
+                    },
                     markerId: MarkerId('destination'),
                     icon: BitmapDescriptor.defaultMarker,
                     position: _latLng),
@@ -106,13 +110,13 @@ class _GetLocationState extends State<GetLocation> {
     );
   }
 
-  // Future<void> cameraPosition(LatLng pos) async {
-  //   final GoogleMapController controller = await _mapController.future;
-  //   CameraPosition _newCameraPosition = CameraPosition(target: pos, zoom: 13);
-  //   await controller.animateCamera(
-  //     CameraUpdate.newCameraPosition(_newCameraPosition),
-  //   );
-  // }
+  Future<void> cameraPosition(LatLng pos) async {
+    final GoogleMapController controller = await _mapController.future;
+    CameraPosition _newCameraPosition = CameraPosition(target: pos, zoom: 13);
+    await controller.animateCamera(
+      CameraUpdate.newCameraPosition(_newCameraPosition),
+    );
+  }
 
   Future<void> stopRoute() async {}
 
@@ -129,7 +133,6 @@ class _GetLocationState extends State<GetLocation> {
   }
 
   Future<void> _showLocationEditDialog() async {
-
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -219,7 +222,7 @@ class _GetLocationState extends State<GetLocation> {
         setState(() {
           currentP =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
-          //cameraPosition(currentP!);
+         cameraPosition(currentP!);
           print(currentP);
         });
       }
